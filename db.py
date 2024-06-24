@@ -1,20 +1,28 @@
 from pymongo import MongoClient
 from config import MONGODB_URI
 
-client = MongoClient(MONGODB_URI)
-db = client['stock_bot']
-alerts_collection = db['alerts']
+class Database:
+    def __init__(self):
+        self.client = MongoClient(MONGODB_URI)
+        self.db = self.client['stock_bot']
+        self.users = self.db['users']
+        self.alerts = self.db['alerts']
 
-def init_db():
-    alerts_collection.create_index([('user_id', 1), ('stock_name', 1)])
+    def add_user(self, user_id):
+        if not self.users.find_one({'user_id': user_id}):
+            self.users.insert_one({'user_id': user_id})
 
-def insert_alert(alert_data):
-    alerts_collection.insert_one(alert_data)
+    def add_alert(self, user_id, symbol, price, alert_type):
+        alert = {
+            'user_id': user_id,
+            'symbol': symbol,
+            'price': price,
+            'alert_type': alert_type
+        }
+        self.alerts.insert_one(alert)
 
-def get_alerts():
-    return list(alerts_collection.find())
+    def get_alerts(self):
+        return list(self.alerts.find())
 
-def remove_alert(alert_id):
-    alerts_collection.delete_one({'_id': alert_id})
-
-#todo - git add . database
+    def remove_alert(self, alert_id):
+        self.alerts.delete_one({'_id': alert_id})

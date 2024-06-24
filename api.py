@@ -3,7 +3,7 @@ from gql.transport.requests import RequestsHTTPTransport
 from config import ALPHA_VANTAGE_API_KEY
 
 # Data Fetch
-transport = RequestsHTTPTransport(url=f'https://www.alphavantage.co/query?apikey={ALPHA_VANTAGE_API_KEY}')
+transport = RequestsHTTPTransport(url=f'https://www.alphavantage.co/query?apikey={"CVOT9HBT60FB5W7I"}')
 client = Client(transport=transport, fetch_schema_from_transport=True)
 
 def get_stock_price(stock_name):
