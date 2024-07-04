@@ -10,13 +10,10 @@ def start(update: Update, context: CallbackContext) -> None:
         "/alert <coin> <price> - Set a price alert for a cryptocurrency\n"
         "/chart <coin> - Get a price chart for the last 7 days\n"
         "/historical <coin> <days> - Get historical price data\n"
-        "/global - View global cryptocurrency market data\n"
-        "/nfts - View top traded NFTs and trade count chart\n\n"
         "Example usage:\n"
         "/price bitcoin\n"
         "/alert ethereum 2000\n"
         "/chart dogecoin\n"
         "/historical cardano 30\n"
-        "/global\n"
     )
     update.message.reply_text(welcome_message)
