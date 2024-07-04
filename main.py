@@ -1,40 +1,49 @@
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackQueryHandler
-from config import TELEGRAM_BOT_TOKEN
-from bot_commands import stock_command, intra_command, chart_command, price_alert_command, alert_callback, handle_alert_input
-from price_alerts import check_price_alerts
+import logging
+from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
+from dotenv import load_dotenv
+import os
+from handlers.start import start
+from handlers.price import price
+from handlers.alert import set_alert, check_alerts
+from handlers.chart import chart
+from handlers.historical import historical
+from handlers.global_data import global_command, button_callback
 
-async def start_command(update, context):
-    await update.message.reply_text("Welcome to the Stock Bot! Use /help to see available commands.")
+# Load environment variables
+load_dotenv()
 
-async def help_command(update, context):
-    help_text = """
-Available commands:
-/stock ₹[name] - Get current stock price and change
-/intra ₹[name] - Get intraday chart
-/chart ₹[name] - Get monthly chart
-/pricealert - Set price alerts
-/help - Show this help message
-    """
-    await update.message.reply_text(help_text)
+# Enable logging
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def main():
-    application = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
+    # Create the Updater and pass it your bot's token
+    updater = Updater(os.getenv('TELEGRAM_BOT_TOKEN'), use_context=True)
 
-    # Add start and help commands
-    application.add_handler(CommandHandler("start", start_command))
-    application.add_handler(CommandHandler("help", help_command))
+    # Get the dispatcher to register handlers
+    dp = updater.dispatcher
 
-    # Existing command handlers
-    application.add_handler(CommandHandler("stock", stock_command))
-    application.add_handler(CommandHandler("intra", intra_command))
-    application.add_handler(CommandHandler("chart", chart_command))
-    application.add_handler(CommandHandler("pricealert", price_alert_command))
-    application.add_handler(CallbackQueryHandler(alert_callback))
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_alert_input))
+    # Register command handlers
+    dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CommandHandler("price", price))
+    dp.add_handler(CommandHandler("alert", set_alert))
+    dp.add_handler(CommandHandler("chart", chart))
+    dp.add_handler(CommandHandler("historical", historical))
+    dp.add_handler(CommandHandler("global", global_command))
 
-    application.job_queue.run_repeating(check_price_alerts, interval=300)
 
-    application.run_polling()
+    # Register callback query handlers
+    dp.add_handler(CallbackQueryHandler(button_callback, pattern='^(?!nft).*$'))
 
-if __name__ == '__main__':
+    # Set up job queue for checking alerts
+    job_queue = updater.job_queue
+    job_queue.run_repeating(check_alerts, interval=300, first=0)  # Run every 5 minutes
+
+    # Start the Bot
+    updater.start_polling()
+
+    # Run the bot until you press Ctrl-C or the process receives SIGINT, SIGTERM or SIGABRT
+    updater.idle()
+
+if __name__ == "__main__":
     main()
