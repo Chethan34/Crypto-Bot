@@ -7,7 +7,6 @@ from handlers.price import price
 from handlers.alert import set_alert, check_alerts
 from handlers.chart import chart
 from handlers.historical import historical
-from handlers.global_data import global_command, button_callback
 
 # Load environment variables
 load_dotenv()
@@ -29,11 +28,7 @@ def main():
     dp.add_handler(CommandHandler("alert", set_alert))
     dp.add_handler(CommandHandler("chart", chart))
     dp.add_handler(CommandHandler("historical", historical))
-    dp.add_handler(CommandHandler("global", global_command))
 
-
-    # Register callback query handlers
-    dp.add_handler(CallbackQueryHandler(button_callback, pattern='^(?!nft).*$'))
 
     # Set up job queue for checking alerts
     job_queue = updater.job_queue
@@ -41,8 +36,6 @@ def main():
 
     # Start the Bot
     updater.start_polling()
-
-    # Run the bot until you press Ctrl-C or the process receives SIGINT, SIGTERM or SIGABRT
     updater.idle()
 
 if __name__ == "__main__":

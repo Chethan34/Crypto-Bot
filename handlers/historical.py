@@ -22,7 +22,7 @@ def historical(update: Update, context: CallbackContext) -> None:
     if "error" in data:
         update.message.reply_text(f"Error fetching data: {data['message']}")
     else:
-        # Preparing the formatted message
+        # Prepare the formatted message
         date_price_map = {}
 
         prices = data.get('prices', [])
@@ -33,16 +33,19 @@ def historical(update: Update, context: CallbackContext) -> None:
             date = datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d')
             date_price_map[date] = price
 
-        # Generating the pretty table with 7 days data
+        # Generate the pretty table with 7 days data
         table = PrettyTable()
         table.field_names = ["Date", "Price (USD)"]
         
-        # dates for the last 7 days in descending order
+        # Get the dates for the last 7 days in descending order
         for i in range(days - 1, -1, -1):
             date = (datetime.utcnow() - timedelta(days=i)).strftime('%Y-%m-%d')
             price = date_price_map.get(date, 'N/A')
             price_str = f"${price:,.2f}" if price != 'N/A' else 'N/A'
             table.add_row([date, price_str])
         
-        table_message = f"```\n{table}\n```"
-        update.message.reply_text(table_message, parse_mode=ParseMode.MARKDOWN_V2)
+        # Prepare the reply message with coin name
+        reply_message = f"Historical Data of {coin_name.capitalize()} for last {days} days:\n\n"
+        reply_message += f"```\n{table}\n```"
+
+        update.message.reply_text(reply_message, parse_mode=ParseMode.MARKDOWN_V2)
