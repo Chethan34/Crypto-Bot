@@ -29,9 +29,6 @@ def get_coin_history(coin_id, days):
     return data['prices']
 
 
-# utils/coingecko.py
-import requests
-
 COINGECKO_API_URL = 'https://api.coingecko.com/api/v3'
 
 def get_coin_id(coin_name):

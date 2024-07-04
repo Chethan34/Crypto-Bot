@@ -22,7 +22,7 @@ def historical(update: Update, context: CallbackContext) -> None:
     if "error" in data:
         update.message.reply_text(f"Error fetching data: {data['message']}")
     else:
-        # Prepare the formatted message
+        # Preparing the formatted message
         date_price_map = {}
 
         prices = data.get('prices', [])
@@ -33,11 +33,11 @@ def historical(update: Update, context: CallbackContext) -> None:
             date = datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d')
             date_price_map[date] = price
 
-        # Generate the pretty table with 7 days data
+        # Generating the pretty table with 7 days data
         table = PrettyTable()
         table.field_names = ["Date", "Price (USD)"]
         
-        # Get the dates for the last 7 days in descending order
+        # dates for the last 7 days in descending order
         for i in range(days - 1, -1, -1):
             date = (datetime.utcnow() - timedelta(days=i)).strftime('%Y-%m-%d')
             price = date_price_map.get(date, 'N/A')
