@@ -36,5 +36,3 @@ def check_alerts(context: CallbackContext):
                     del alerts[user_id][coin]
                     if not alerts[user_id]:
                         del alerts[user_id]
-
-    # Note: Implement save_alerts() function if you want to persist alerts between bot restarts
