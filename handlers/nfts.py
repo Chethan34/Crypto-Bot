@@ -97,7 +97,7 @@ def escape_markdown(text):
     return ''.join(f'\\{char}' if char in escape_chars else char for char in text)
 
 def create_table(nft_data):
-    table = escape_markdown("*Top 10 Traded NFTs in the Last 30 Days:*\n\n")
+    table = "*Top 10 Traded NFTs in the Last 30 Days:*\n\n"
     
     for item in nft_data:
         symbol = item['Trade']['Buy']['Currency']['Symbol']
@@ -109,18 +109,15 @@ def create_table(nft_data):
         
         if not symbol:  # If symbol is missing or empty
             smart_contract = item['Trade']['Buy']['Currency']['SmartContract']
-            nft_url = f"https://etherscan.io/address/{smart_contract}"
-            symbol = f"[NFT]({nft_url})"
-        else:
-            symbol = escape_markdown(symbol)
+            symbol = f"NFT ({smart_contract[:6]}...{smart_contract[-4:]})"
         
-        table += f"*Symbol:* {symbol}\n"
-        table += f"*Trades:* {escape_markdown(f'{trades:,}')}\n"
-        table += f"*Buyers:* {escape_markdown(str(buyers))}\n"
-        table += f"*Sellers:* {escape_markdown(str(sellers))}\n"
-        table += f"*NFTs:* {escape_markdown(str(nfts))}\n"
-        table += f"*Trade Volume:* {escape_markdown(f'{trade_vol:,.2f}')}\n"
-        table += escape_markdown("-" * 30) + "\n"
+        table += f"Symbol: {symbol}\n"
+        table += f"Trades: {trades:,}\n"
+        table += f"Buyers: {buyers}\n"
+        table += f"Sellers: {sellers}\n"
+        table += f"NFTs: {nfts}\n"
+        table += f"Trade Volume: {trade_vol:,.2f}\n"
+        table += "-" * 30 + "\n"
     
     return table
 
@@ -128,6 +125,6 @@ def nft_analysis(update: Update, context: CallbackContext) -> None:
     nft_data = fetch_nft_data()
     if nft_data:
         table = create_table(nft_data)
-        update.message.reply_text(f"\n{table}\n", parse_mode=ParseMode.MARKDOWN_V2)
+        update.message.reply_text(table)
     else:
         update.message.reply_text("Failed to fetch NFT data")
