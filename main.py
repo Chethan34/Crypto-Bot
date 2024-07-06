@@ -1,7 +1,7 @@
 import logging
-from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
+from telegram.ext import Updater, CommandHandler
 from handlers.start import start
 from handlers.price import price
 from handlers.alert import set_alert, check_alerts
@@ -28,7 +28,6 @@ def main():
     dp.add_handler(CommandHandler("alert", set_alert))
     dp.add_handler(CommandHandler("chart", chart))
     dp.add_handler(CommandHandler("historical", historical))
-
 
     # Set up job queue for checking alerts
     job_queue = updater.job_queue
