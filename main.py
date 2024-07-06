@@ -29,7 +29,7 @@ def main():
     dp.add_handler(CommandHandler("alert", set_alert))
     dp.add_handler(CommandHandler("chart", chart))
     dp.add_handler(CommandHandler("historical", historical))
-    dp.add_handler(CommandHandler("nft_analysis", nft_analysis))
+    dp.add_handler(CommandHandler("nfts", nft_analysis))  # Changed from "nft_analysis" to "nfts"
 
     # Set up job queue for checking alerts
     job_queue = updater.job_queue
