@@ -7,6 +7,7 @@ from handlers.price import price
 from handlers.alert import set_alert, check_alerts
 from handlers.chart import chart
 from handlers.historical import historical
+from handlers.nfts import nft_analysis
 
 # Load environment variables
 load_dotenv()
@@ -28,6 +29,7 @@ def main():
     dp.add_handler(CommandHandler("alert", set_alert))
     dp.add_handler(CommandHandler("chart", chart))
     dp.add_handler(CommandHandler("historical", historical))
+    dp.add_handler(CommandHandler("nft_analysis", nft_analysis))
 
     # Set up job queue for checking alerts
     job_queue = updater.job_queue
