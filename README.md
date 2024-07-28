@@ -4,4 +4,4 @@ A Python-based crypto bot that delivers the latest updates on cryptocurrencies.
 
 ## Demo
 
-[Watch the demo video](https://vimeo.com/user223544717)
+[Watch the demo video](https://vimeo.com/991139565)
