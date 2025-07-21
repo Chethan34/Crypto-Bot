@@ -4,12 +4,12 @@ from dotenv import load_dotenv
 from telegram.ext import Updater, CommandHandler
 from handlers.start import start
 from handlers.price import price
-from handlers.alert import set_alert, check_alerts
 from handlers.chart import chart
 from handlers.historical import historical
-from handlers.nfts import nft_analysis
+from telegram.ext import CommandHandler
+from handlers.txhash_handler import txhash_handler
 
-# Load environment variables
+
 load_dotenv()
 
 # Enable logging
@@ -17,7 +17,6 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 def main():
-    # Create the Updater and pass it your bot's token
     updater = Updater(os.getenv('TELEGRAM_BOT_TOKEN'), use_context=True)
 
     # Get the dispatcher to register handlers
@@ -26,16 +25,12 @@ def main():
     # Register command handlers
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("price", price))
-    dp.add_handler(CommandHandler("alert", set_alert))
     dp.add_handler(CommandHandler("chart", chart))
     dp.add_handler(CommandHandler("historical", historical))
-    dp.add_handler(CommandHandler("nfts", nft_analysis))  
+    dp.add_handler(CommandHandler("txhash", txhash_handler))
 
-    # Set up job queue for checking alerts
-    job_queue = updater.job_queue
-    job_queue.run_repeating(check_alerts, interval=300, first=0)  # Run every 5 minutes
 
-    # Start the Bot
+    # Starting bot
     updater.start_polling()
     updater.idle()
 
